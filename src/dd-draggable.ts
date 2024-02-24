@@ -14,7 +14,7 @@ import { isTouch, touchend, touchmove, touchstart, pointerdown } from './dd-touc
 export interface DDDraggableOpt {
   appendTo?: string | HTMLElement;
   handle?: string;
-  helper?: 'clone' | HTMLElement | ((event: Event) => HTMLElement);
+  helper?: 'clone' | HTMLElement | ((event: Event, el: HTMLElement) => HTMLElement);
   cancel?: string;
   // containment?: string | HTMLElement; // TODO: not implemented yet
   // revert?: string | boolean | unknown; // TODO: not implemented yet
@@ -271,7 +271,7 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   protected _createHelper(event: DragEvent): HTMLElement {
     let helper = this.el;
     if (typeof this.option.helper === 'function') {
-      helper = this.option.helper(event);
+      helper = this.option.helper(event, this.el);
     } else if (this.option.helper === 'clone') {
       helper = Utils.cloneNode(this.el);
     }
