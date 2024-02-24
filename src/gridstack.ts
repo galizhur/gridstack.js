@@ -1511,7 +1511,7 @@ export class GridStack {
 
   /** @internal */
   protected _triggerEvent(type: string, data?: GridStackNode[]): GridStack {
-    let event = data ? new CustomEvent(type, { bubbles: false, detail: data }) : new Event(type);
+    let event = data ? new CustomEvent(type, { bubbles: true, detail: data }) : new Event(type);
     this.el.dispatchEvent(event);
     return this;
   }
