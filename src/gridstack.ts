@@ -1393,7 +1393,7 @@ export class GridStack {
     } else {
       // NOTE: clientHeight & getBoundingClientRect() is undefined for text and other leaf nodes. use <div> container!
       const child = item.firstElementChild;
-      if (!child) { console.error(`Error: GridStack.resizeToContent() widget id:${n.id} '${GridStack.resizeToContentParent}'.firstElementChild is null, make sure to have a div like container. Skipping sizing.`); return; }
+      if (!child) { return; }
       wantedH = child.getBoundingClientRect().height || itemH;
     }
     if (itemH === wantedH) return;
