@@ -3,13 +3,13 @@
  * Copyright (c) 2021-2022 Alain Dumesny - see GridStack root license
  */
 
-import { DDDraggable } from './dd-draggable';
-import { DDManager } from './dd-manager';
-import { DDBaseImplement, HTMLElementExtendOpt } from './dd-base-impl';
-import { Utils } from './utils';
-import { DDElementHost } from './dd-element';
-import { isTouch, pointerenter, pointerleave } from './dd-touch';
-import { DDUIData } from './types';
+import { DDDraggable } from "./dd-draggable";
+import { DDManager } from "./dd-manager";
+import { DDBaseImplement, HTMLElementExtendOpt } from "./dd-base-impl";
+import { Utils } from "./utils";
+import { DDElementHost } from "./dd-element";
+import { isTouch, pointerenter, pointerleave } from "./dd-touch";
+import { DDUIData } from "./types";
 
 export interface DDDroppableOpt {
   accept?: string | ((el: HTMLElement) => boolean);
@@ -21,7 +21,6 @@ export interface DDDroppableOpt {
 // let count = 0; // TEST
 
 export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt<DDDroppableOpt> {
-
   public accept: (el: HTMLElement) => boolean;
 
   constructor(public el: HTMLElement, public option: DDDroppableOpt = {}) {
@@ -33,49 +32,49 @@ export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt
     this._setupAccept();
   }
 
-  public on(event: 'drop' | 'dropover' | 'dropout', callback: (event: DragEvent) => void): void {
+  public on(event: "drop" | "dropover" | "dropout", callback: (event: DragEvent) => void): void {
     super.on(event, callback);
   }
 
-  public off(event: 'drop' | 'dropover' | 'dropout'): void {
+  public off(event: "drop" | "dropover" | "dropout"): void {
     super.off(event);
   }
 
   public enable(): void {
     if (this.disabled === false) return;
     super.enable();
-    this.el.classList.add('ui-droppable');
-    this.el.classList.remove('ui-droppable-disabled');
-    this.el.addEventListener('mouseenter', this._mouseEnter);
-    this.el.addEventListener('mouseleave', this._mouseLeave);
+    this.el.classList.add("ui-droppable");
+    this.el.classList.remove("ui-droppable-disabled");
+    this.el.addEventListener("mouseenter", this._mouseEnter);
+    this.el.addEventListener("mouseleave", this._mouseLeave);
     if (isTouch) {
-      this.el.addEventListener('pointerenter', pointerenter);
-      this.el.addEventListener('pointerleave', pointerleave);
+      this.el.addEventListener("pointerenter", pointerenter);
+      this.el.addEventListener("pointerleave", pointerleave);
     }
   }
 
   public disable(forDestroy = false): void {
     if (this.disabled === true) return;
     super.disable();
-    this.el.classList.remove('ui-droppable');
-    if (!forDestroy) this.el.classList.add('ui-droppable-disabled');
-    this.el.removeEventListener('mouseenter', this._mouseEnter);
-    this.el.removeEventListener('mouseleave', this._mouseLeave);
+    this.el.classList.remove("ui-droppable");
+    if (!forDestroy) this.el.classList.add("ui-droppable-disabled");
+    this.el.removeEventListener("mouseenter", this._mouseEnter);
+    this.el.removeEventListener("mouseleave", this._mouseLeave);
     if (isTouch) {
-      this.el.removeEventListener('pointerenter', pointerenter);
-      this.el.removeEventListener('pointerleave', pointerleave);
+      this.el.removeEventListener("pointerenter", pointerenter);
+      this.el.removeEventListener("pointerleave", pointerleave);
     }
   }
 
   public destroy(): void {
     this.disable(true);
-    this.el.classList.remove('ui-droppable');
-    this.el.classList.remove('ui-droppable-disabled');
+    this.el.classList.remove("ui-droppable");
+    this.el.classList.remove("ui-droppable-disabled");
     super.destroy();
   }
 
   public updateOption(opts: DDDroppableOpt): DDDroppable {
-    Object.keys(opts).forEach(key => this.option[key] = opts[key]);
+    Object.keys(opts).forEach((key) => (this.option[key] = opts[key]));
     this._setupAccept();
     return this;
   }
@@ -94,12 +93,12 @@ export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt
     }
     DDManager.dropElement = this;
 
-    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: 'dropover' });
+    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: "dropover" });
     if (this.option.over) {
-      this.option.over(ev, this._ui(DDManager.dragElement))
+      this.option.over(ev, this._ui(DDManager.dragElement));
     }
-    this.triggerEvent('dropover', ev);
-    this.el.classList.add('ui-droppable-over');
+    this.triggerEvent("dropover", ev);
+    this.el.classList.add("ui-droppable-over");
     // console.log('tracking'); // TEST
   }
 
@@ -110,11 +109,11 @@ export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt
     e.preventDefault();
     e.stopPropagation();
 
-    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: 'dropout' });
+    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: "dropout" });
     if (this.option.out) {
-      this.option.out(ev, this._ui(DDManager.dragElement))
+      this.option.out(ev, this._ui(DDManager.dragElement));
     }
-    this.triggerEvent('dropout', ev);
+    this.triggerEvent("dropout", ev);
 
     if (DDManager.dropElement === this) {
       delete DDManager.dropElement;
@@ -138,11 +137,11 @@ export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt
   /** item is being dropped on us - called by the drag mouseup handler - this calls the client drop event */
   public drop(e: MouseEvent): void {
     e.preventDefault();
-    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: 'drop' });
+    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: "drop" });
     if (this.option.drop) {
-      this.option.drop(ev, this._ui(DDManager.dragElement))
+      this.option.drop(ev, this._ui(DDManager.dragElement));
     }
-    this.triggerEvent('drop', ev);
+    this.triggerEvent("drop", ev);
   }
 
   /** @internal true if element matches the string/method accept option */
@@ -153,7 +152,7 @@ export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt
   /** @internal */
   protected _setupAccept(): DDDroppable {
     if (!this.option.accept) return this;
-    if (typeof this.option.accept === 'string') {
+    if (typeof this.option.accept === "string") {
       this.accept = (el: HTMLElement) => el.classList.contains(this.option.accept as string) || el.matches(this.option.accept as string);
     } else {
       this.accept = this.option.accept;
@@ -165,8 +164,7 @@ export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt
   protected _ui(drag: DDDraggable): DDUIData {
     return {
       draggable: drag.el,
-      ...drag.ui()
+      ...drag.ui(),
     };
   }
 }
-

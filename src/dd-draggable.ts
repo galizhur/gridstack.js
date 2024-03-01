@@ -3,18 +3,18 @@
  * Copyright (c) 2021-2022 Alain Dumesny - see GridStack root license
  */
 
-import { DDManager } from './dd-manager';
-import { DragTransform, Utils } from './utils';
-import { DDBaseImplement, HTMLElementExtendOpt } from './dd-base-impl';
-import { GridItemHTMLElement, DDUIData } from './types';
-import { DDElementHost } from './dd-element';
-import { isTouch, touchend, touchmove, touchstart, pointerdown } from './dd-touch';
+import { DDManager } from "./dd-manager";
+import { DragTransform, Utils } from "./utils";
+import { DDBaseImplement, HTMLElementExtendOpt } from "./dd-base-impl";
+import { GridItemHTMLElement, DDUIData } from "./types";
+import { DDElementHost } from "./dd-element";
+import { isTouch, touchend, touchmove, touchstart, pointerdown } from "./dd-touch";
 
 // TODO: merge with DDDragOpt ?
 export interface DDDraggableOpt {
   appendTo?: string | HTMLElement;
   handle?: string;
-  helper?: 'clone' | HTMLElement | ((event: Event, el: HTMLElement) => HTMLElement);
+  helper?: "clone" | HTMLElement | ((event: Event, el: HTMLElement) => HTMLElement);
   cancel?: string;
   // containment?: string | HTMLElement; // TODO: not implemented yet
   // revert?: string | boolean | unknown; // TODO: not implemented yet
@@ -33,7 +33,7 @@ interface DragOffset {
   offsetTop: number;
 }
 
-type DDDragEvent = 'drag' | 'dragstart' | 'dragstop';
+type DDDragEvent = "drag" | "dragstart" | "dragstop";
 
 // make sure we are not clicking on known object that handles mouseDown
 const skipMouseDown = 'input,textarea,button,select,option,[contenteditable="true"],.ui-resizable-handle';
@@ -58,7 +58,7 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   /** @internal */
   protected helperContainment: HTMLElement;
   /** @internal properties we change during dragging, and restore back */
-  protected static originStyleProp = ['transition', 'pointerEvents', 'position', 'left', 'top', 'minWidth', 'willChange'];
+  protected static originStyleProp = ["transition", "pointerEvents", "position", "left", "top", "minWidth", "willChange"];
   /** @internal pause before we call the actual drag hit collision code */
   protected dragTimeout: number;
   /** @internal */
@@ -66,7 +66,7 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
     xScale: 1,
     yScale: 1,
     xOffset: 0,
-    yOffset: 0
+    yOffset: 0,
   };
 
   constructor(public el: HTMLElement, public option: DDDraggableOpt = {}) {
@@ -93,24 +93,24 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   public enable(): void {
     if (this.disabled === false) return;
     super.enable();
-    this.dragEl.addEventListener('mousedown', this._mouseDown);
+    this.dragEl.addEventListener("mousedown", this._mouseDown);
     if (isTouch) {
-      this.dragEl.addEventListener('touchstart', touchstart);
-      this.dragEl.addEventListener('pointerdown', pointerdown);
+      this.dragEl.addEventListener("touchstart", touchstart);
+      this.dragEl.addEventListener("pointerdown", pointerdown);
       // this.dragEl.style.touchAction = 'none'; // not needed unlike pointerdown doc comment
     }
-    this.el.classList.remove('ui-draggable-disabled');
+    this.el.classList.remove("ui-draggable-disabled");
   }
 
   public disable(forDestroy = false): void {
     if (this.disabled === true) return;
     super.disable();
-    this.dragEl.removeEventListener('mousedown', this._mouseDown);
+    this.dragEl.removeEventListener("mousedown", this._mouseDown);
     if (isTouch) {
-      this.dragEl.removeEventListener('touchstart', touchstart);
-      this.dragEl.removeEventListener('pointerdown', pointerdown);
+      this.dragEl.removeEventListener("touchstart", touchstart);
+      this.dragEl.removeEventListener("pointerdown", pointerdown);
     }
-    if (!forDestroy) this.el.classList.add('ui-draggable-disabled');
+    if (!forDestroy) this.el.classList.add("ui-draggable-disabled");
   }
 
   public destroy(): void {
@@ -125,7 +125,7 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   }
 
   public updateOption(opts: DDDraggableOpt): DDDraggable {
-    Object.keys(opts).forEach(key => this.option[key] = opts[key]);
+    Object.keys(opts).forEach((key) => (this.option[key] = opts[key]));
     return this;
   }
 
@@ -154,11 +154,11 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
     delete DDManager.dragElement;
     delete DDManager.dropElement;
     // document handler so we can continue receiving moves as the item is 'fixed' position, and capture=true so WE get a first crack
-    document.addEventListener('mousemove', this._mouseMove, { capture: true, passive: true}); // true=capture, not bubble
-    document.addEventListener('mouseup', this._mouseUp, true);
+    document.addEventListener("mousemove", this._mouseMove, { capture: true, passive: true }); // true=capture, not bubble
+    document.addEventListener("mouseup", this._mouseUp, true);
     if (isTouch) {
-      this.dragEl.addEventListener('touchmove', touchmove);
-      this.dragEl.addEventListener('touchend', touchend);
+      this.dragEl.addEventListener("touchmove", touchmove);
+      this.dragEl.addEventListener("touchend", touchend);
     }
 
     e.preventDefault();
@@ -173,11 +173,11 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   /** @internal method to call actual drag event */
   protected _callDrag(e: DragEvent): void {
     if (!this.dragging) return;
-    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: 'drag' });
+    const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: "drag" });
     if (this.option.drag) {
       this.option.drag(ev, this.ui());
     }
-    this.triggerEvent('drag', ev);
+    this.triggerEvent("drag", ev);
   }
 
   /** @internal called when the main page (after successful mousedown) receives a move event to drag the item around the screen */
@@ -189,7 +189,7 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
       this._dragFollow(e);
       // delay actual grid handling drag until we pause for a while if set
       if (DDManager.pauseDrag) {
-        const pause = Number.isInteger(DDManager.pauseDrag) ? DDManager.pauseDrag as number : 100;
+        const pause = Number.isInteger(DDManager.pauseDrag) ? (DDManager.pauseDrag as number) : 100;
         if (this.dragTimeout) window.clearTimeout(this.dragTimeout);
         this.dragTimeout = window.setTimeout(() => this._callDrag(e), pause);
       } else {
@@ -210,17 +210,15 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
       }
       this.helper = this._createHelper(e);
       this._setupHelperContainmentStyle();
-      this.dragTransform = Utils.getValuesFromTransformedElement(
-        this.helperContainment
-      );
+      this.dragTransform = Utils.getValuesFromTransformedElement(this.helperContainment);
       this.dragOffset = this._getDragOffset(e, this.el, this.helperContainment);
-      const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: 'dragstart' });
+      const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: "dragstart" });
 
       this._setupHelperStyle(e);
       if (this.option.start) {
         this.option.start(ev, this.ui());
       }
-      this.triggerEvent('dragstart', ev);
+      this.triggerEvent("dragstart", ev);
     }
     // e.preventDefault(); // passive = true. OLD: was needed otherwise we get text sweep text selection as we drag around
     return true;
@@ -228,11 +226,11 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
 
   /** @internal call when the mouse gets released to drop the item at current location */
   protected _mouseUp(e: MouseEvent): void {
-    document.removeEventListener('mousemove', this._mouseMove, true);
-    document.removeEventListener('mouseup', this._mouseUp, true);
+    document.removeEventListener("mousemove", this._mouseMove, true);
+    document.removeEventListener("mouseup", this._mouseUp, true);
     if (isTouch) {
-      this.dragEl.removeEventListener('touchmove', touchmove, true);
-      this.dragEl.removeEventListener('touchend', touchend, true);
+      this.dragEl.removeEventListener("touchmove", touchmove, true);
+      this.dragEl.removeEventListener("touchend", touchend, true);
     }
     if (this.dragging) {
       delete this.dragging;
@@ -248,11 +246,11 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
       } else {
         this.helper.remove();
       }
-      const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: 'dragstop' });
+      const ev = Utils.initEvent<DragEvent>(e, { target: this.el, type: "dragstop" });
       if (this.option.stop) {
         this.option.stop(ev); // NOTE: destroy() will be called when removing item, so expect NULL ptr after!
       }
-      this.triggerEvent('dragstop', ev);
+      this.triggerEvent("dragstop", ev);
 
       // call the droppable method to receive the item
       if (DDManager.dropElement) {
@@ -270,33 +268,33 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   /** @internal create a clone copy (or user defined method) of the original drag item if set */
   protected _createHelper(event: DragEvent): HTMLElement {
     let helper = this.el;
-    if (typeof this.option.helper === 'function') {
+    if (typeof this.option.helper === "function") {
       helper = this.option.helper(event, this.el);
-    } else if (this.option.helper === 'clone') {
+    } else if (this.option.helper === "clone") {
       helper = Utils.cloneNode(this.el);
     }
     if (!document.body.contains(helper)) {
-      Utils.appendTo(helper, this.option.appendTo === 'parent' ? this.el.parentElement : this.option.appendTo);
+      Utils.appendTo(helper, this.option.appendTo === "parent" ? this.el.parentElement : this.option.appendTo);
     }
     if (helper === this.el) {
-      this.dragElementOriginStyle = DDDraggable.originStyleProp.map(prop => this.el.style[prop]);
+      this.dragElementOriginStyle = DDDraggable.originStyleProp.map((prop) => this.el.style[prop]);
     }
     return helper;
   }
 
   /** @internal set the fix position of the dragged item */
   protected _setupHelperStyle(e: DragEvent): DDDraggable {
-    this.helper.classList.add('ui-draggable-dragging');
+    this.helper.classList.add("ui-draggable-dragging");
     // TODO: set all at once with style.cssText += ... ? https://stackoverflow.com/questions/3968593
     const style = this.helper.style;
-    style.pointerEvents = 'none'; // needed for over items to get enter/leave
+    style.pointerEvents = "none"; // needed for over items to get enter/leave
     // style.cursor = 'move'; //  TODO: can't set with pointerEvents=none ! (done in CSS as well)
-    style.width = this.dragOffset.width + 'px';
-    style.height = this.dragOffset.height + 'px';
-    style.willChange = 'left, top';
-    style.position = 'fixed'; // let us drag between grids by not clipping as parent .grid-stack is position: 'relative'
+    style.width = this.dragOffset.width + "px";
+    style.height = this.dragOffset.height + "px";
+    style.willChange = "left, top";
+    style.position = "fixed"; // let us drag between grids by not clipping as parent .grid-stack is position: 'relative'
     this._dragFollow(e); // now position it
-    style.transition = 'none'; // show up instantly
+    style.transition = "none"; // show up instantly
     setTimeout(() => {
       if (this.helper) {
         style.transition = null; // recover animation
@@ -307,7 +305,7 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
 
   /** @internal restore back the original style before dragging */
   protected _removeHelperStyle(): DDDraggable {
-    this.helper.classList.remove('ui-draggable-dragging');
+    this.helper.classList.remove("ui-draggable-dragging");
     let node = (this.helper as GridItemHTMLElement)?.gridstackNode;
     // don't bother restoring styles if we're gonna remove anyway...
     if (!node?._isAboutToRemove && this.dragElementOriginStyle) {
@@ -317,10 +315,10 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
       // Ideally both would animate ('move' would immediately restore 'absolute' and adjust coordinate to match,
       // then trigger a delay (repaint) to restore to final dest with animate) but then we need to make sure 'resizestop'
       // is called AFTER 'transitionend' event is received (see https://github.com/gridstack/gridstack.js/issues/2033)
-      let transition = this.dragElementOriginStyle['transition'] || null;
-      helper.style.transition = this.dragElementOriginStyle['transition'] = 'none'; // can't be NULL #1973
-      DDDraggable.originStyleProp.forEach(prop => helper.style[prop] = this.dragElementOriginStyle[prop] || null);
-      setTimeout(() => helper.style.transition = transition, 50); // recover animation from saved vars after a pause (0 isn't enough #1973)
+      let transition = this.dragElementOriginStyle["transition"] || null;
+      helper.style.transition = this.dragElementOriginStyle["transition"] = "none"; // can't be NULL #1973
+      DDDraggable.originStyleProp.forEach((prop) => (helper.style[prop] = this.dragElementOriginStyle[prop] || null));
+      setTimeout(() => (helper.style.transition = transition), 50); // recover animation from saved vars after a pause (0 isn't enough #1973)
     }
     delete this.dragElementOriginStyle;
     return this;
@@ -335,17 +333,17 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
     // }
     const style = this.helper.style;
     const offset = this.dragOffset;
-    style.left = (e.clientX + offset.offsetLeft - containmentRect.left) * this.dragTransform.xScale + 'px';
-    style.top = (e.clientY + offset.offsetTop - containmentRect.top) * this.dragTransform.yScale + 'px';
+    style.left = (e.clientX + offset.offsetLeft - containmentRect.left) * this.dragTransform.xScale + "px";
+    style.top = (e.clientY + offset.offsetTop - containmentRect.top) * this.dragTransform.yScale + "px";
   }
 
   /** @internal */
   protected _setupHelperContainmentStyle(): DDDraggable {
     this.helperContainment = this.helper.parentElement;
-    if (this.helper.style.position !== 'fixed') {
+    if (this.helper.style.position !== "fixed") {
       this.parentOriginStylePosition = this.helperContainment.style.position;
       if (getComputedStyle(this.helperContainment).position.match(/static/)) {
-        this.helperContainment.style.position = 'relative';
+        this.helperContainment.style.position = "relative";
       }
     }
     return this;
@@ -353,7 +351,6 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
 
   /** @internal */
   protected _getDragOffset(event: DragEvent, el: HTMLElement, parent: HTMLElement): DragOffset {
-
     // in case ancestor has transform/perspective css properties that change the viewpoint
     let xformOffsetX = 0;
     let xformOffsetY = 0;
@@ -366,10 +363,10 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
     return {
       left: targetOffset.left,
       top: targetOffset.top,
-      offsetLeft: - event.clientX + targetOffset.left - xformOffsetX,
-      offsetTop: - event.clientY + targetOffset.top - xformOffsetY,
+      offsetLeft: -event.clientX + targetOffset.left - xformOffsetX,
+      offsetTop: -event.clientY + targetOffset.top - xformOffsetY,
       width: targetOffset.width * this.dragTransform.xScale,
-      height: targetOffset.height * this.dragTransform.yScale
+      height: targetOffset.height * this.dragTransform.yScale,
     };
   }
 
@@ -379,10 +376,11 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
     const containmentRect = containmentEl.getBoundingClientRect();
     const offset = this.helper.getBoundingClientRect();
     return {
-      position: { //Current CSS position of the helper as { top, left } object
+      position: {
+        //Current CSS position of the helper as { top, left } object
         top: (offset.top - containmentRect.top) * this.dragTransform.yScale,
-        left: (offset.left - containmentRect.left) * this.dragTransform.xScale
-      }
+        left: (offset.left - containmentRect.left) * this.dragTransform.xScale,
+      },
       /* not used by GridStack for now...
       helper: [this.helper], //The object arr representing the helper that's being dragged.
       offset: { top: offset.top, left: offset.left } // Current offset position of the helper as { top, left } object.

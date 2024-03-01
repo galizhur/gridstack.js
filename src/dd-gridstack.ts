@@ -4,21 +4,21 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { GridItemHTMLElement, GridStackElement, DDDragInOpt } from './types';
-import { Utils } from './utils';
-import { DDManager } from './dd-manager';
-import { DDElement, DDElementHost } from './dd-element';
+import { GridItemHTMLElement, GridStackElement, DDDragInOpt } from "./types";
+import { Utils } from "./utils";
+import { DDManager } from "./dd-manager";
+import { DDElement, DDElementHost } from "./dd-element";
 
 /** Drag&Drop drop options */
 export type DDDropOpt = {
   /** function or class type that this grid will accept as dropped items (see GridStackOptions.acceptWidgets) */
   accept?: (el: GridItemHTMLElement) => boolean;
-}
+};
 
 /** drag&drop options currently called from the main code, but others can be passed in grid options */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type DDOpts = 'enable' | 'disable' | 'destroy' | 'option' | string | any;
-export type DDKey = 'minWidth' | 'minHeight' | 'maxWidth' | 'maxHeight';
+export type DDOpts = "enable" | "disable" | "destroy" | "option" | string | any;
+export type DDKey = "minWidth" | "minHeight" | "maxWidth" | "maxHeight";
 export type DDValue = number | string;
 
 /** drag&drop events callbacks */
@@ -30,20 +30,19 @@ export type DDCallback = (event: Event, arg2: GridItemHTMLElement, helper?: Grid
  * HTML Native Mouse and Touch Events Drag and Drop functionality.
  */
 export class DDGridStack {
-
   public resizable(el: GridItemHTMLElement, opts: DDOpts, key?: DDKey, value?: DDValue): DDGridStack {
-    this._getDDElements(el).forEach(dEl => {
-      if (opts === 'disable' || opts === 'enable') {
+    this._getDDElements(el).forEach((dEl) => {
+      if (opts === "disable" || opts === "enable") {
         dEl.ddResizable && dEl.ddResizable[opts](); // can't create DD as it requires options for setupResizable()
-      } else if (opts === 'destroy') {
+      } else if (opts === "destroy") {
         dEl.ddResizable && dEl.cleanResizable();
-      } else if (opts === 'option') {
+      } else if (opts === "option") {
         dEl.setupResizable({ [key]: value });
       } else {
         const n = dEl.el.gridstackNode;
         const grid = n.grid;
-        let handles = dEl.el.getAttribute('gs-resize-handles') || grid.opts.resizable.handles || 'e,s,se';
-        if (handles === 'all') handles = 'n,e,s,w,se,sw,ne,nw';
+        let handles = dEl.el.getAttribute("gs-resize-handles") || grid.opts.resizable.handles || "e,s,se";
+        if (handles === "all") handles = "n,e,s,w,se,sw,ne,nw";
         // NOTE: keep the resize handles as e,w don't have enough space (10px) to show resize corners anyway. limit during drag instead
         // restrict vertical resize if height is done to match content anyway... odd to have it spring back
         // if (Utils.shouldSizeToContent(n)) {
@@ -58,8 +57,8 @@ export class DDGridStack {
           ...{
             start: opts.start,
             stop: opts.stop,
-            resize: opts.resize
-          }
+            resize: opts.resize,
+          },
         });
       }
     });
@@ -67,12 +66,12 @@ export class DDGridStack {
   }
 
   public draggable(el: GridItemHTMLElement, opts: DDOpts, key?: DDKey, value?: DDValue): DDGridStack {
-    this._getDDElements(el).forEach(dEl => {
-      if (opts === 'disable' || opts === 'enable') {
+    this._getDDElements(el).forEach((dEl) => {
+      if (opts === "disable" || opts === "enable") {
         dEl.ddDraggable && dEl.ddDraggable[opts](); // can't create DD as it requires options for setupDraggable()
-      } else if (opts === 'destroy') {
+      } else if (opts === "destroy") {
         dEl.ddDraggable && dEl.cleanDraggable();
-      } else if (opts === 'option') {
+      } else if (opts === "option") {
         dEl.setupDraggable({ [key]: value });
       } else {
         const grid = dEl.el.gridstackNode.grid;
@@ -82,8 +81,8 @@ export class DDGridStack {
             // containment: (grid.parentGridItem && !grid.opts.dragOut) ? grid.el.parentElement : (grid.opts.draggable.containment || null),
             start: opts.start,
             stop: opts.stop,
-            drag: opts.drag
-          }
+            drag: opts.drag,
+          },
         });
       }
     });
@@ -91,23 +90,24 @@ export class DDGridStack {
   }
 
   public dragIn(el: GridStackElement, opts: DDDragInOpt): DDGridStack {
-    this._getDDElements(el).forEach(dEl => dEl.setupDraggable(opts));
+    this._getDDElements(el).forEach((dEl) => dEl.setupDraggable(opts));
     return this;
   }
 
   public droppable(el: GridItemHTMLElement, opts: DDOpts | DDDropOpt, key?: DDKey, value?: DDValue): DDGridStack {
-    if (typeof opts.accept === 'function' && !opts._accept) {
+    if (typeof opts.accept === "function" && !opts._accept) {
       opts._accept = opts.accept;
       opts.accept = (el) => opts._accept(el);
     }
-    this._getDDElements(el).forEach(dEl => {
-      if (opts === 'disable' || opts === 'enable') {
+    this._getDDElements(el).forEach((dEl) => {
+      if (opts === "disable" || opts === "enable") {
         dEl.ddDroppable && dEl.ddDroppable[opts]();
-      } else if (opts === 'destroy') {
-        if (dEl.ddDroppable) { // error to call destroy if not there
+      } else if (opts === "destroy") {
+        if (dEl.ddDroppable) {
+          // error to call destroy if not there
           dEl.cleanDroppable();
         }
-      } else if (opts === 'option') {
+      } else if (opts === "option") {
         dEl.setupDroppable({ [key]: value });
       } else {
         dEl.setupDroppable(opts);
@@ -132,19 +132,20 @@ export class DDGridStack {
   }
 
   public on(el: GridItemHTMLElement, name: string, callback: DDCallback): DDGridStack {
-    this._getDDElements(el).forEach(dEl =>
+    this._getDDElements(el).forEach((dEl) =>
       dEl.on(name, (event: Event) => {
         callback(
           event,
-          DDManager.dragElement ? DDManager.dragElement.el : event.target as GridItemHTMLElement,
-          DDManager.dragElement ? DDManager.dragElement.helper : null)
+          DDManager.dragElement ? DDManager.dragElement.el : (event.target as GridItemHTMLElement),
+          DDManager.dragElement ? DDManager.dragElement.helper : null
+        );
       })
     );
     return this;
   }
 
   public off(el: GridItemHTMLElement, name: string): DDGridStack {
-    this._getDDElements(el).forEach(dEl => dEl.off(name));
+    this._getDDElements(el).forEach((dEl) => dEl.off(name));
     return this;
   }
 
@@ -152,8 +153,10 @@ export class DDGridStack {
   protected _getDDElements(els: GridStackElement, create = true): DDElement[] {
     let hosts = Utils.getElements(els) as DDElementHost[];
     if (!hosts.length) return [];
-    let list = hosts.map(e => e.ddElement || (create ? DDElement.init(e) : null));
-    if (!create) { list.filter(d => d); } // remove nulls
+    let list = hosts.map((e) => e.ddElement || (create ? DDElement.init(e) : null));
+    if (!create) {
+      list.filter((d) => d);
+    } // remove nulls
     return list;
   }
 }

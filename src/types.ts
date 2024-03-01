@@ -3,30 +3,30 @@
  * Copyright (c) 2021 Alain Dumesny - see GridStack root license
  */
 
-import { GridStack } from './gridstack';
-import { GridStackEngine } from './gridstack-engine';
+import { GridStack } from "./gridstack";
+import { GridStackEngine } from "./gridstack-engine";
 
 // default values for grid options - used during init and when saving out
 export const gridDefaults: GridStackOptions = {
-  alwaysShowResizeHandle: 'mobile',
+  alwaysShowResizeHandle: "mobile",
   animate: true,
   auto: true,
-  cellHeight: 'auto',
+  cellHeight: "auto",
   cellHeightThrottle: 100,
-  cellHeightUnit: 'px',
+  cellHeightUnit: "px",
   column: 12,
-  draggable: { handle: '.grid-stack-item-content', appendTo: 'body', scroll: true },
-  handle: '.grid-stack-item-content',
-  itemClass: 'grid-stack-item',
+  draggable: { handle: ".grid-stack-item-content", appendTo: "body", scroll: true },
+  handle: ".grid-stack-item-content",
+  itemClass: "grid-stack-item",
   margin: 10,
-  marginUnit: 'px',
+  marginUnit: "px",
   maxRow: 0,
   minRow: 0,
-  placeholderClass: 'grid-stack-placeholder',
-  placeholderText: '',
-  removableOptions: { accept: 'grid-stack-item', decline: 'grid-stack-non-removable'},
-  resizable: { handles: 'se' },
-  rtl: 'auto',
+  placeholderClass: "grid-stack-placeholder",
+  placeholderText: "",
+  removableOptions: { accept: "grid-stack-item", decline: "grid-stack-non-removable" },
+  resizable: { handles: "se" },
+  rtl: "auto",
 
   // **** same as not being set ****
   // disableDrag: false,
@@ -41,8 +41,8 @@ export const gridDefaults: GridStackOptions = {
 
 /** default dragIn options */
 export const dragInDefaultOptions: DDDragInOpt = {
-  handle: '.grid-stack-item-content',
-  appendTo: 'body',
+  handle: ".grid-stack-item-content",
+  appendTo: "body",
   // revert: 'invalid',
   // scroll: false,
 };
@@ -57,9 +57,15 @@ export const dragInDefaultOptions: DDDragInOpt = {
  * 'move' | 'scale' - will only size or move items
  * 'none' will leave items unchanged, unless they don't fit in column count
  */
-export type ColumnOptions = 'list' | 'compact' | 'moveScale' | 'move' | 'scale' | 'none' |
-  ((column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => void);
-export type CompactOptions = 'list' | 'compact';
+export type ColumnOptions =
+  | "list"
+  | "compact"
+  | "moveScale"
+  | "move"
+  | "scale"
+  | "none"
+  | ((column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => void);
+export type CompactOptions = "list" | "compact";
 export type numberOrString = number | string;
 export interface GridItemHTMLElement extends HTMLElement {
   /** pointer to grid node instance */
@@ -127,7 +133,7 @@ export interface GridStackOptions {
     * `true` the resizing handles are always shown
     * 'mobile' if running on a mobile device, default to `true` (since there is no hovering per say), else `false`.
     See [example](http://gridstack.github.io/gridstack.js/demo/mobile.html) */
-  alwaysShowResizeHandle?: true | false | 'mobile';
+  alwaysShowResizeHandle?: true | false | "mobile";
 
   /** turns animation on (default?: true) */
   animate?: boolean;
@@ -160,7 +166,7 @@ export interface GridStackOptions {
    * Note: for nested grids, it is recommended to use 'auto' which will always match the container grid-item current width (in column) to keep inside and outside
    * items always to same. flag is not supported for regular non-nested grids.
    */
-  column?: number | 'auto';
+  column?: number | "auto";
 
   /** responsive column layout for width:column behavior */
   columnOpts?: Responsive;
@@ -252,11 +258,11 @@ export interface GridStackOptions {
    * if true turns grid to RTL. Possible values are true, false, 'auto' (default?: 'auto')
    * See [example](http://gridstack.github.io/gridstack.js/demo/rtl.html)
    */
-  rtl?: boolean | 'auto';
+  rtl?: boolean | "auto";
 
   /** set to true if all grid items (by default, but item can also override) height should be based on content size instead of WidgetItem.h to avoid v-scrollbars.
    Note: this is still row based, not pixels, so it will use ceil(getBoundingClientRect().height / getCellHeight()) */
-   sizeToContent?: boolean;
+  sizeToContent?: boolean;
 
   /**
    * makes grid static (default?: false). If `true` widgets are not movable/resizable.
@@ -352,7 +358,7 @@ export interface DDResizeOpt {
   /**
    * sides where you can resize from (ex: 'e, se, s, sw, w') - default 'se' (south-east)
    * Note: it is not recommended to resize from the top sides as weird side effect may occur.
-  */
+   */
   handles?: string;
 }
 
@@ -379,7 +385,7 @@ export interface DDDragOpt {
 }
 export interface DDDragInOpt extends DDDragOpt {
   /** helper function when dropping: 'clone' or your own method */
-  helper?: 'clone' | ((event: Event) => HTMLElement);
+  helper?: "clone" | ((event: Event) => HTMLElement);
   /** used when dragging item from the outside, and canceling (ex: 'invalid' or your own method)*/
   // revert?: string | ((event: Event) => HTMLElement);
 }

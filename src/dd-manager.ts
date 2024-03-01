@@ -3,9 +3,9 @@
  * Copyright (c) 2021 Alain Dumesny - see GridStack root license
  */
 
-import { DDDraggable } from './dd-draggable';
-import { DDDroppable } from './dd-droppable';
-import { DDResizable } from './dd-resizable';
+import { DDDraggable } from "./dd-draggable";
+import { DDDroppable } from "./dd-droppable";
+import { DDResizable } from "./dd-resizable";
 
 /**
  * globals that are shared across Drag & Drop instances
@@ -25,5 +25,4 @@ export class DDManager {
 
   /** current item we're over for resizing purpose (ignore nested grid resize handles) */
   public static overResizeElement: DDResizable;
-
 }

@@ -12,9 +12,9 @@
     return false;
   }
 
-  function CustomEvent (event, params) {
-    params = params || {bubbles: false, cancelable: false, detail: null};
-    var evt = document.createEvent('CustomEvent');
+  function CustomEvent(event, params) {
+    params = params || { bubbles: false, cancelable: false, detail: null };
+    var evt = document.createEvent("CustomEvent");
     evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
     return evt;
   }
@@ -23,13 +23,15 @@
 })();
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
-Number.isNaN = Number.isNaN || function isNaN(input) {
-  return typeof input === 'number' && input !== input;
-}
+Number.isNaN =
+  Number.isNaN ||
+  function isNaN(input) {
+    return typeof input === "number" && input !== input;
+  };
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
 if (!Array.prototype.find) {
-  Object.defineProperty(Array.prototype, 'find', {
+  Object.defineProperty(Array.prototype, "find", {
     value: function (predicate) {
       // 1. Let O be ? ToObject(this value).
       if (this == null) {
@@ -42,8 +44,8 @@ if (!Array.prototype.find) {
       var len = o.length >>> 0;
 
       // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-      if (typeof predicate !== 'function') {
-        throw TypeError('predicate must be a function');
+      if (typeof predicate !== "function") {
+        throw TypeError("predicate must be a function");
       }
 
       // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
@@ -70,14 +72,14 @@ if (!Array.prototype.find) {
       return undefined;
     },
     configurable: true,
-    writable: true
+    writable: true,
   });
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
 if (!Array.prototype.findIndex) {
-  Object.defineProperty(Array.prototype, 'findIndex', {
-    value: function(predicate) {
+  Object.defineProperty(Array.prototype, "findIndex", {
+    value: function (predicate) {
       // 1. Let O be ? ToObject(this value).
       if (this == null) {
         throw new TypeError('"this" is null or not defined');
@@ -89,8 +91,8 @@ if (!Array.prototype.findIndex) {
       var len = o.length >>> 0;
 
       // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-      if (typeof predicate !== 'function') {
-        throw new TypeError('predicate must be a function');
+      if (typeof predicate !== "function") {
+        throw new TypeError("predicate must be a function");
       }
 
       // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
@@ -117,17 +119,17 @@ if (!Array.prototype.findIndex) {
       return -1;
     },
     configurable: true,
-    writable: true
+    writable: true,
   });
 }
 
 // Source: https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/append()/append().md
 (function (arr) {
   arr.forEach(function (item) {
-    if (item.hasOwnProperty('append')) {
+    if (item.hasOwnProperty("append")) {
       return;
     }
-    Object.defineProperty(item, 'append', {
+    Object.defineProperty(item, "append", {
       configurable: true,
       enumerable: true,
       writable: true,
@@ -141,7 +143,7 @@ if (!Array.prototype.findIndex) {
         });
 
         this.appendChild(docFrag);
-      }
+      },
     });
   });
 })([Element.prototype, Document.prototype, DocumentFragment.prototype]);
@@ -149,16 +151,18 @@ if (!Array.prototype.findIndex) {
 // from: https://github.com/jserz/js_piece/blob/master/DOM/Element/prepend()/prepend().md
 (function (arr) {
   arr.forEach(function (item) {
-      item.prepend = item.prepend || function () {
-          var argArr = Array.prototype.slice.call(arguments),
-              docFrag = document.createDocumentFragment();
+    item.prepend =
+      item.prepend ||
+      function () {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
 
-          argArr.forEach(function (argItem) {
-              var isNode = argItem instanceof Node;
-              docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
-          });
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
 
-          this.insertBefore(docFrag, this.firstChild);
+        this.insertBefore(docFrag, this.firstChild);
       };
   });
 })([Element.prototype, Document.prototype, DocumentFragment.prototype]);
@@ -166,11 +170,11 @@ if (!Array.prototype.findIndex) {
 // Production steps of ECMA-262, Edition 5, 15.4.4.1-dev8
 // Reference: http://es5.github.io/#x15.4.4.1-dev8
 
-if (!Array.prototype['forEach']) {
-
-  Array.prototype.forEach = function(callback, thisArg) {
-
-    if (this == null) { throw new TypeError('Array.prototype.forEach called on null or undefined'); }
+if (!Array.prototype["forEach"]) {
+  Array.prototype.forEach = function (callback, thisArg) {
+    if (this == null) {
+      throw new TypeError("Array.prototype.forEach called on null or undefined");
+    }
 
     var T, k;
     // 1. Let O be the result of calling toObject() passing the
@@ -182,20 +186,23 @@ if (!Array.prototype['forEach']) {
     // 3. Let len be toUint32(lenValue).
     var len = O.length >>> 0;
 
-    // 4. If isCallable(callback) is false, throw a TypeError exception. 
+    // 4. If isCallable(callback) is false, throw a TypeError exception.
     // See: http://es5.github.com/#x9.11
-    if (typeof callback !== "function") { throw new TypeError(callback + ' is not a function'); }
+    if (typeof callback !== "function") {
+      throw new TypeError(callback + " is not a function");
+    }
 
     // 5. If thisArg was supplied, let T be thisArg; else let
     // T be undefined.
-    if (arguments.length > 1) { T = thisArg; }
+    if (arguments.length > 1) {
+      T = thisArg;
+    }
 
     // 6. Let k be 0
     k = 0;
 
     // 7. Repeat, while k < len
     while (k < len) {
-
       var kValue;
 
       // a. Let Pk be ToString(k).
@@ -205,7 +212,6 @@ if (!Array.prototype['forEach']) {
       //    This step can be combined with c
       // c. If kPresent is true, then
       if (k in O) {
-
         // i. Let kValue be the result of calling the Get internal
         // method of O with argument Pk.
         kValue = O[k];
@@ -222,57 +228,57 @@ if (!Array.prototype['forEach']) {
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
-(function(){
-  try{
-      new window.CustomEvent('T');
-  }catch(e){
-      var CustomEvent = function(event, params){
-          params = params || { bubbles: false, cancelable: false, detail: undefined };
+(function () {
+  try {
+    new window.CustomEvent("T");
+  } catch (e) {
+    var CustomEvent = function (event, params) {
+      params = params || { bubbles: false, cancelable: false, detail: undefined };
 
-          var evt = document.createEvent('CustomEvent');
+      var evt = document.createEvent("CustomEvent");
 
-          evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
 
-          return evt;
-      };
+      return evt;
+    };
 
-      CustomEvent.prototype = window.Event.prototype;
+    CustomEvent.prototype = window.Event.prototype;
 
-      window.CustomEvent = CustomEvent;
+    window.CustomEvent = CustomEvent;
   }
 })();
 
 // https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
 (function (arr) {
   arr.forEach(function (item) {
-   if (item.hasOwnProperty('remove')) {
-     return;
-   }
-   Object.defineProperty(item, 'remove', {
-     configurable: true,
-     enumerable: true,
-     writable: true,
-     value: function remove() {
-       this.parentNode.removeChild(this);
-     }
-   });
- });
+    if (item.hasOwnProperty("remove")) {
+      return;
+    }
+    Object.defineProperty(item, "remove", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function remove() {
+        this.parentNode.removeChild(this);
+      },
+    });
+  });
 })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
 if (!Element.prototype.matches) {
   Element.prototype.matches =
-      Element.prototype.matchesSelector ||
-      Element.prototype.mozMatchesSelector ||
-      Element.prototype.msMatchesSelector ||
-      Element.prototype.oMatchesSelector ||
-      Element.prototype.webkitMatchesSelector ||
-      function(s) {
-          var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-              i = matches.length;
-          while (--i >= 0 && matches.item(i) !== this) {}
-          return i > -1;
-      };
+    Element.prototype.matchesSelector ||
+    Element.prototype.mozMatchesSelector ||
+    Element.prototype.msMatchesSelector ||
+    Element.prototype.oMatchesSelector ||
+    Element.prototype.webkitMatchesSelector ||
+    function (s) {
+      var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+        i = matches.length;
+      while (--i >= 0 && matches.item(i) !== this) {}
+      return i > -1;
+    };
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
@@ -281,12 +287,16 @@ if (!Array.from) {
   Array.from = (function () {
     var toStr = Object.prototype.toString;
     var isCallable = function (fn) {
-      return typeof fn === 'function' || toStr.call(fn) === '[object Function]';
+      return typeof fn === "function" || toStr.call(fn) === "[object Function]";
     };
     var toInteger = function (value) {
       var number = Number(value);
-      if (isNaN(number)) { return 0; }
-      if (number === 0 || !isFinite(number)) { return number; }
+      if (isNaN(number)) {
+        return 0;
+      }
+      if (number === 0 || !isFinite(number)) {
+        return number;
+      }
       return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
     };
     var maxSafeInteger = Math.pow(2, 53) - 1;
@@ -296,7 +306,7 @@ if (!Array.from) {
     };
 
     // The length property of the from method is 1.
-    return function from(arrayLike/*, mapFn, thisArg */) {
+    return function from(arrayLike /*, mapFn, thisArg */) {
       // 1. Let C be the this value.
       var C = this;
 
@@ -311,11 +321,11 @@ if (!Array.from) {
       // 4. If mapfn is undefined, then let mapping be false.
       var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
       var T;
-      if (typeof mapFn !== 'undefined') {
+      if (typeof mapFn !== "undefined") {
         // 5. else
         // 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
         if (!isCallable(mapFn)) {
-          throw new TypeError('Array.from: when provided, the second argument must be a function');
+          throw new TypeError("Array.from: when provided, the second argument must be a function");
         }
 
         // 5. b. If thisArg was supplied, let T be thisArg; else let T be undefined.
@@ -341,7 +351,7 @@ if (!Array.from) {
       while (k < len) {
         kValue = items[k];
         if (mapFn) {
-          A[k] = typeof T === 'undefined' ? mapFn(kValue, k) : mapFn.call(T, kValue, k);
+          A[k] = typeof T === "undefined" ? mapFn(kValue, k) : mapFn.call(T, kValue, k);
         } else {
           A[k] = kValue;
         }
@@ -352,5 +362,5 @@ if (!Array.from) {
       // 20. Return A.
       return A;
     };
-  }());
+  })();
 }

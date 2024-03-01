@@ -3,23 +3,24 @@
  * Copyright (c) 2021 Alain Dumesny - see GridStack root license
  */
 
-import { DDManager } from './dd-manager';
+import { DDManager } from "./dd-manager";
 
 /**
  * Detect touch support - Windows Surface devices and other touch devices
  * should we use this instead ? (what we had for always showing resize handles)
  * /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
  */
-export const isTouch: boolean = typeof window !== 'undefined' && typeof document !== 'undefined' &&
-( 'ontouchstart' in document
-  || 'ontouchstart' in window
-  // || !!window.TouchEvent // true on Windows 10 Chrome desktop so don't use this
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  || ((window as any).DocumentTouch && document instanceof (window as any).DocumentTouch)
-  || navigator.maxTouchPoints > 0
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  || (navigator as any).msMaxTouchPoints > 0
-);
+export const isTouch: boolean =
+  typeof window !== "undefined" &&
+  typeof document !== "undefined" &&
+  ("ontouchstart" in document ||
+    "ontouchstart" in window ||
+    // || !!window.TouchEvent // true on Windows 10 Chrome desktop so don't use this
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ((window as any).DocumentTouch && document instanceof (window as any).DocumentTouch) ||
+    navigator.maxTouchPoints > 0 ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (navigator as any).msMaxTouchPoints > 0);
 
 // interface TouchCoord {x: number, y: number};
 
@@ -29,8 +30,8 @@ class DDTouch {
 }
 
 /**
-* Get the x,y position of a touch event
-*/
+ * Get the x,y position of a touch event
+ */
 // function getTouchCoords(e: TouchEvent): TouchCoord {
 //   return {
 //     x: e.changedTouches[0].pageX,
@@ -44,32 +45,32 @@ class DDTouch {
  * @param {String} simulatedType The corresponding mouse event
  */
 function simulateMouseEvent(e: TouchEvent, simulatedType: string) {
-
   // Ignore multi-touch events
   if (e.touches.length > 1) return;
 
   // Prevent "Ignored attempt to cancel a touchmove event with cancelable=false" errors
   if (e.cancelable) e.preventDefault();
 
-  const touch = e.changedTouches[0], simulatedEvent = document.createEvent('MouseEvents');
+  const touch = e.changedTouches[0],
+    simulatedEvent = document.createEvent("MouseEvents");
 
   // Initialize the simulated mouse event using the touch event's coordinates
   simulatedEvent.initMouseEvent(
-    simulatedType,    // type
-    true,             // bubbles
-    true,             // cancelable
-    window,           // view
-    1,                // detail
-    touch.screenX,    // screenX
-    touch.screenY,    // screenY
-    touch.clientX,    // clientX
-    touch.clientY,    // clientY
-    false,            // ctrlKey
-    false,            // altKey
-    false,            // shiftKey
-    false,            // metaKey
-    0,                // button
-    null              // relatedTarget
+    simulatedType, // type
+    true, // bubbles
+    true, // cancelable
+    window, // view
+    1, // detail
+    touch.screenX, // screenX
+    touch.screenY, // screenY
+    touch.clientX, // clientX
+    touch.clientY, // clientY
+    false, // ctrlKey
+    false, // altKey
+    false, // shiftKey
+    false, // metaKey
+    0, // button
+    null // relatedTarget
   );
 
   // Dispatch the simulated event to the target element
@@ -82,35 +83,33 @@ function simulateMouseEvent(e: TouchEvent, simulatedType: string) {
  * @param {String} simulatedType The corresponding mouse event
  */
 function simulatePointerMouseEvent(e: PointerEvent, simulatedType: string) {
-
   // Prevent "Ignored attempt to cancel a touchmove event with cancelable=false" errors
   if (e.cancelable) e.preventDefault();
 
-  const simulatedEvent = document.createEvent('MouseEvents');
+  const simulatedEvent = document.createEvent("MouseEvents");
 
   // Initialize the simulated mouse event using the touch event's coordinates
   simulatedEvent.initMouseEvent(
-    simulatedType,    // type
-    true,             // bubbles
-    true,             // cancelable
-    window,           // view
-    1,                // detail
-    e.screenX,    // screenX
-    e.screenY,    // screenY
-    e.clientX,    // clientX
-    e.clientY,    // clientY
-    false,            // ctrlKey
-    false,            // altKey
-    false,            // shiftKey
-    false,            // metaKey
-    0,                // button
-    null              // relatedTarget
+    simulatedType, // type
+    true, // bubbles
+    true, // cancelable
+    window, // view
+    1, // detail
+    e.screenX, // screenX
+    e.screenY, // screenY
+    e.clientX, // clientX
+    e.clientY, // clientY
+    false, // ctrlKey
+    false, // altKey
+    false, // shiftKey
+    false, // metaKey
+    0, // button
+    null // relatedTarget
   );
 
   // Dispatch the simulated event to the target element
   e.target.dispatchEvent(simulatedEvent);
 }
-
 
 /**
  * Handle the touchstart events
@@ -124,7 +123,7 @@ export function touchstart(e: TouchEvent): void {
   // Simulate the mouse events
   // simulateMouseEvent(e, 'mouseover');
   // simulateMouseEvent(e, 'mousemove');
-  simulateMouseEvent(e, 'mousedown');
+  simulateMouseEvent(e, "mousedown");
 }
 
 /**
@@ -135,7 +134,7 @@ export function touchmove(e: TouchEvent): void {
   // Ignore event if not handled by us
   if (!DDTouch.touchHandled) return;
 
-  simulateMouseEvent(e, 'mousemove');
+  simulateMouseEvent(e, "mousemove");
 }
 
 /**
@@ -143,7 +142,6 @@ export function touchmove(e: TouchEvent): void {
  * @param {Object} e The document's touchend event
  */
 export function touchend(e: TouchEvent): void {
-
   // Ignore event if not handled
   if (!DDTouch.touchHandled) return;
 
@@ -156,12 +154,12 @@ export function touchend(e: TouchEvent): void {
   const wasDragging = !!DDManager.dragElement;
 
   // Simulate the mouseup event
-  simulateMouseEvent(e, 'mouseup');
+  simulateMouseEvent(e, "mouseup");
   // simulateMouseEvent(event, 'mouseout');
 
   // If the touch interaction did not move, it should trigger a click
   if (!wasDragging) {
-    simulateMouseEvent(e, 'click');
+    simulateMouseEvent(e, "click");
   }
 
   // Unset the flag to allow other widgets to inherit the touch event
@@ -175,8 +173,8 @@ export function touchend(e: TouchEvent): void {
  */
 export function pointerdown(e: PointerEvent): void {
   // console.log("pointer down")
-  if (e.pointerType === 'mouse') return;
-  (e.target as HTMLElement).releasePointerCapture(e.pointerId) // <- Important!
+  if (e.pointerType === "mouse") return;
+  (e.target as HTMLElement).releasePointerCapture(e.pointerId); // <- Important!
 }
 
 export function pointerenter(e: PointerEvent): void {
@@ -186,8 +184,8 @@ export function pointerenter(e: PointerEvent): void {
     return;
   }
   // console.log('pointerenter');
-  if (e.pointerType === 'mouse') return;
-  simulatePointerMouseEvent(e, 'mouseenter');
+  if (e.pointerType === "mouse") return;
+  simulatePointerMouseEvent(e, "mouseenter");
 }
 
 export function pointerleave(e: PointerEvent): void {
@@ -197,11 +195,10 @@ export function pointerleave(e: PointerEvent): void {
     // console.log('pointerleave ignored');
     return;
   }
-  if (e.pointerType === 'mouse') return;
+  if (e.pointerType === "mouse") return;
   DDTouch.pointerLeaveTimeout = window.setTimeout(() => {
     delete DDTouch.pointerLeaveTimeout;
     // console.log('pointerleave delayed');
-    simulatePointerMouseEvent(e, 'mouseleave');
+    simulatePointerMouseEvent(e, "mouseleave");
   }, 10);
 }
-
